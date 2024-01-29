@@ -8,9 +8,12 @@ interface Props {
 }
 
 const Editor = ({ iframeRef }: Props) => {
-  const { updateSourceCode } = useEditorStore((store) => store.actions)
+  const { updateSourceCode, updateEditorState } = useEditorStore((store) => store.actions)
 
   const handleChange = (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {
+    // refresh state
+    updateEditorState('editing')
+
     if (iframeRef?.current) {
       let value = e.target.value
 
@@ -48,7 +51,7 @@ const EditorItem = ({ type, handleChange }: EditorItemProps) => {
       <textarea
         name={`${type}-editor`}
         onChange={handleChange}
-        className='bg-stone-700 text-white h-[360px]'
+        className='bg-stone-700 text-white h-[200px]'
       />
     </div>
   )

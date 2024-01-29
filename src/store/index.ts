@@ -8,7 +8,8 @@ interface State {
 
 interface Action {
   actions: {
-    updateSourceCode: (string: string) => void
+    updateSourceCode: (sourceCode: string) => void
+    updateEditorState: (state: EditorState) => void
   }
 }
 
@@ -16,6 +17,7 @@ export const useEditorStore = create<State & Action>((set) => ({
   state: 'editing',
   sourceCode: '',
   actions: {
-    updateSourceCode: (sourceCode: string) => set((state) => ({ ...state, sourceCode })),
+    updateSourceCode: (sourceCode: string) => set((s) => ({ ...s, sourceCode })),
+    updateEditorState: (state: EditorState) => set((s) => ({ ...s, state })),
   },
 }))

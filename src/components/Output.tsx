@@ -1,4 +1,6 @@
 import { forwardRef } from 'react'
+import { useEditorStore } from '../store'
+import Badge from './ui/Badge'
 
 function updateIframe() {
   return /*html*/ `
@@ -34,10 +36,22 @@ function updateIframe() {
   `
 }
 
-const Output = forwardRef<HTMLIFrameElement>((_, ref) => {
+interface Props {
+  errorMessage: string
+}
+
+const Output = forwardRef<HTMLIFrameElement, Props>(({ errorMessage }, ref) => {
+  const editorState = useEditorStore((s) => s.state)
   return (
     <div className='flex-1'>
-      <iframe ref={ref} className='w-full h-full' srcDoc={updateIframe()}></iframe>
+      {editorState === 'error' ? (
+        <div className='p-4'>
+          <Badge>❗️ Error</Badge>
+          <pre className='text-red-500'>{errorMessage}</pre>
+        </div>
+      ) : (
+        <iframe ref={ref} className='w-full h-full' srcDoc={updateIframe()}></iframe>
+      )}
     </div>
   )
 })
