@@ -1,14 +1,25 @@
 import { ChangeEvent } from 'react'
 import { useDebounce } from '@toss/react'
+import { transplieCode } from '../utils/transpile'
+import { useEditorStore } from '../store'
 
 interface Props {
   iframeRef: React.RefObject<HTMLIFrameElement>
 }
 
 const Editor = ({ iframeRef }: Props) => {
+  const { updateSourceCode } = useEditorStore((store) => store.actions)
+
   const handleChange = (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (iframeRef?.current) {
-      const value = e.target.value
+      let value = e.target.value
+
+      if (type === 'javascript') {
+        const { iframeCode, sourceCode } = transplieCode(value)
+        value = iframeCode
+        updateSourceCode(sourceCode)
+      }
+
       const payload = { type, value }
       iframeRef.current.contentWindow?.postMessage(payload, '*')
     }

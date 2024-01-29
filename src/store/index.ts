@@ -3,8 +3,19 @@ import { EditorState } from '../types'
 
 interface State {
   state: EditorState
+  sourceCode: string
 }
 
-export const useEditorStore = create<State>((set) => ({
+interface Action {
+  actions: {
+    updateSourceCode: (string: string) => void
+  }
+}
+
+export const useEditorStore = create<State & Action>((set) => ({
   state: 'editing',
+  sourceCode: '',
+  actions: {
+    updateSourceCode: (sourceCode: string) => set((state) => ({ ...state, sourceCode })),
+  },
 }))

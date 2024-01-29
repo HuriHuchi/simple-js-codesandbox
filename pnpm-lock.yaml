@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@babel/standalone':
+    specifier: ^7.23.9
+    version: 7.23.9
   '@toss/react':
     specifier: ^1.6.1
     version: 1.6.1(react@18.2.0)
@@ -19,6 +22,9 @@ dependencies:
     version: 4.5.0(@types/react@18.2.48)(react@18.2.0)
 
 devDependencies:
+  '@types/babel__standalone':
+    specifier: ^7.1.7
+    version: 7.1.7
   '@types/node':
     specifier: ^20.11.9
     version: 20.11.9
@@ -267,6 +273,11 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
+    dev: false
+
+  /@babel/standalone@7.23.9:
+    resolution: {integrity: sha512-89NGhVfgKDqDQrtNPxqfnhIReKvp2CR80ofPNEAUpbtnouFelq33hQFURLralD9I+eFS7s5zVK61JRg/D1nLWg==}
+    engines: {node: '>=6.9.0'}
     dev: false
 
   /@babel/template@7.23.9:
@@ -784,6 +795,12 @@ packages:
     resolution: {integrity: sha512-ASsj+tpEDsEiFr1arWrlN6V3mdfjRMZt6LtK/Vp/kreFLnr5QH5+DhvD5nINYZXzwJvXeGq+05iUXcAzVrqWtw==}
     dependencies:
       '@babel/types': 7.23.9
+    dev: true
+
+  /@types/babel__standalone@7.1.7:
+    resolution: {integrity: sha512-4RUJX9nWrP/emaZDzxo/+RYW8zzLJTXWJyp2k78HufG459HCz754hhmSymt3VFOU6/Wy+IZqfPvToHfLuGOr7w==}
+    dependencies:
+      '@types/babel__core': 7.20.5
     dev: true
 
   /@types/babel__template@7.4.4:
