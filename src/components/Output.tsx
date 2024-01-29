@@ -8,8 +8,21 @@ function updateIframe() {
       <script type='module'>
         window.addEventListener('message', (event) => {
           const {type, value} = event.data
+
           if (type === 'html') {
             document.body.innerHTML = value
+          }
+
+          if (type === 'css') {
+            const styleElement = document.createElement('style')
+            styleElement.textContent = value
+            document.head.appendChild(styleElement)
+          }
+
+          if (type === 'javascript') {
+            const scriptElement = document.createElement('script')
+            scriptElement.textContent = value
+            document.head.appendChild(scriptElement)
           }
         })
       </script>
