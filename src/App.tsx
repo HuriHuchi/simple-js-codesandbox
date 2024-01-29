@@ -5,7 +5,6 @@ import Soruce from './components/Soruce'
 
 function App() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  console.log('render')
   return (
     <div className='w-full min-h-dvh flex bg-stone-800'>
       <Editor iframeRef={iframeRef} />

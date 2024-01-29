@@ -15,7 +15,7 @@ const Editor = ({ iframeRef }: Props) => {
   }, 500)
 
   return (
-    <div className='flex-1 border-r border-stone-600'>
+    <div className='flex-1 border-r border-stone-600 p-4'>
       <textarea
         name='editor'
         onChange={handleChange}

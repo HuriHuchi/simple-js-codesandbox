@@ -4,6 +4,7 @@ function updateIframe() {
   return /*html*/ `
   <html>
     <head>
+      <link rel="stylesheet" href="/iframe.css">
       <script type='module'>
         window.addEventListener('message', (event) => {
           const {type, value} = event.data
