@@ -1,60 +1,72 @@
-import { ChangeEvent } from 'react'
-import { useDebounce } from '@toss/react'
 import { transplieCode } from '../utils/transpile'
 import { useEditorStore } from '../store'
+import MonacoEditor from '@monaco-editor/react'
+import { useDebounce } from '@toss/react'
+import { forwardRef } from 'react'
 
 interface Props {
   iframeRef: React.RefObject<HTMLIFrameElement>
 }
 
-const Editor = ({ iframeRef }: Props) => {
+const editorCode = /* html */ `
+import React, { useEffect } from 'https://cdn.skypack.dev/react'
+import { render } from 'https://cdn.skypack.dev/react-dom'
+
+import confetti from 'https://cdn.skypack.dev/canvas-confetti'
+
+function App() {
+  useEffect(() => confetti(), [])
+
+  return (
+    <div className="app">
+      <h1>JavaScript Sandbox</h1>
+      <p>
+        You can use NPM packages provided by {''}
+        <a href="https://www.skypack.dev/">Skypack</a>.
+      </p>
+      <img src="/image.gif" />
+    </div>
+  )
+}
+
+render(
+  <App />,
+  document.getElementById('app')
+)`.trim()
+
+const Editor = forwardRef<HTMLDivElement, Props>(({ iframeRef }, ref) => {
   const { updateSourceCode, updateEditorState } = useEditorStore((store) => store.actions)
 
-  const handleChange = (type: string) => (e: ChangeEvent<HTMLTextAreaElement>) => {
-    // refresh state
+  const handleEditorChange = (value: string | undefined) => {
     updateEditorState('editing')
 
-    if (iframeRef?.current) {
-      let value = e.target.value
+    if (iframeRef?.current && value) {
+      const { iframeCode, sourceCode } = transplieCode(value)
 
-      if (type === 'javascript') {
-        const { iframeCode, sourceCode } = transplieCode(value)
-        value = iframeCode
-        updateSourceCode(sourceCode)
-      }
-
-      const payload = { type, value }
+      updateSourceCode(sourceCode)
+      const payload = { type: 'javascript', value: iframeCode }
       iframeRef.current.contentWindow?.postMessage(payload, '*')
     }
   }
 
   return (
-    <div className='flex-1 border-r border-stone-600 p-4 flex flex-col gap-8'>
-      <EditorItem type='html' handleChange={useDebounce(handleChange('html'), 500)} />
-      <EditorItem type='css' handleChange={useDebounce(handleChange('css'), 500)} />
-      <EditorItem type='javascript' handleChange={useDebounce(handleChange('javascript'), 500)} />
-    </div>
-  )
-}
-
-interface EditorItemProps {
-  type: string
-  handleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void
-}
-
-const EditorItem = ({ type, handleChange }: EditorItemProps) => {
-  return (
-    <div className='flex flex-col'>
-      <label htmlFor={`${type}-editor`} className='text-white text-xl'>
-        {type}
-      </label>
-      <textarea
-        name={`${type}-editor`}
-        onChange={handleChange}
-        className='bg-stone-700 text-white h-[200px]'
+    <div ref={ref} className='border-r border-stone-600 p-4 flex flex-col gap-8 w-1/2 resize-x'>
+      <MonacoEditor
+        height='100%'
+        defaultLanguage='javascript'
+        defaultValue={editorCode}
+        theme='vs-dark'
+        onChange={useDebounce(handleEditorChange, 500)}
+        options={{
+          automaticLayout: true,
+          minimap: { enabled: false },
+          fontSize: 16,
+          tabSize: 2,
+          matchBrackets: 'always',
+        }}
       />
     </div>
   )
-}
+})
 
 export default Editor
