@@ -21,3 +21,8 @@ export const useEditorStore = create<State & Action>((set) => ({
     updateEditorState: (state: EditorState) => set((s) => ({ ...s, state })),
   },
 }))
+
+// states
+export const useEditorState = () => useEditorStore((s) => s.state)
+// actions
+export const useEditorActions = () => useEditorStore((s) => s.actions)

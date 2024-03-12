@@ -1,49 +1,43 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import Editor from './components/Editor'
 import Output from './components/Output'
 import Soruce from './components/Soruce'
-import { useEditorStore } from './store'
+import { useEditorActions } from './store'
+import { usePaneResize } from './hooks/usePaneResize'
+import { useHandleError } from './hooks/useHandleError'
+import Resizer from './components/Resizer'
 
 function App() {
+  // refs
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const [resizeMode, setResizeMode] = useState(false)
-
+  // states
   const [errorMessage, setErrorMessage] = useState('')
-  const { updateEditorState } = useEditorStore((s) => s.actions)
 
-  useEffect(() => {
-    const handleResize = (e) => {
-      if (containerRef?.current) {
-        containerRef.current.style.width = `${e.clientX}px`
-      }
-    }
+  const { updateEditorState } = useEditorActions()
+  const { activateResizeMode } = usePaneResize({ elementRef: containerRef })
 
-    if (resizeMode) {
-      document.addEventListener('mousemove', handleResize)
-      return () => {
-        document.removeEventListener('mousemove', handleResize)
-      }
-    }
-  }, [resizeMode])
-
-  useEffect(() => {
-    const handleError = ({ error }: ErrorEvent) => {
+  const onError = useCallback(
+    ({ error }: ErrorEvent) => {
       updateEditorState('error')
-      setErrorMessage(error.message)
-    }
-    window.addEventListener('error', handleError)
-    return () => window.removeEventListener('error', handleError)
-  }, [updateEditorState])
+      setErrorMessage(error?.message)
+    },
+    [updateEditorState],
+  )
+
+  // handle global error
+  useHandleError({ onError })
 
   return (
     <div className='min-h-dvh flex bg-stone-800'>
       <Editor ref={containerRef} iframeRef={iframeRef} />
-      <div
-        className='cursor-col-resize h-screen w-2 bg-stone-700 hover:bg-stone-600 transition'
-        onMouseDown={() => setResizeMode(true)}
-        onMouseUp={() => setResizeMode(false)}></div>
+      <Resizer
+        onMouseDown={(e) => {
+          e.preventDefault()
+          activateResizeMode()
+        }}
+      />
       <div className='flex-1 flex flex-col'>
         <Output ref={iframeRef} errorMessage={errorMessage} />
         <Soruce />

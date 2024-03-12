@@ -9,7 +9,7 @@ export function transplieCode(code: string): TranspiledCodeType {
   const { code: transpiledCode } = transform(codeToTransplie, options)
 
   if (!transpiledCode) {
-    throw new Error(`Something went wrong transpilign ${codeToTransplie}`)
+    throw new Error(`Something went wrong transpiling ${codeToTransplie}`)
   }
 
   const hasImports = Boolean(code.match(importsRegex))

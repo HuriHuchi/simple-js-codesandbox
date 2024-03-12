@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { useEditorStore } from '../store'
+import { useEditorState } from '../store'
 import Badge from './ui/Badge'
 
 function updateIframe() {
@@ -9,13 +9,11 @@ function updateIframe() {
       <link rel="stylesheet" href="/iframe.css">
       <script type='module'>
         window.addEventListener('message', (event) => {
-          const {type, value} = event.data
-          if (type === 'javascript') {
-            const scriptElement = document.createElement('script')
-            scriptElement.type = 'module'
-            scriptElement.textContent = value
-            document.body.appendChild(scriptElement)
-          }
+          const {value} = event.data
+          const scriptElement = document.createElement('script')
+          scriptElement.type = 'module'
+          scriptElement.textContent = value
+          document.body.appendChild(scriptElement)
         })
       </script>
     </head>
@@ -31,7 +29,8 @@ interface Props {
 }
 
 const Output = forwardRef<HTMLIFrameElement, Props>(({ errorMessage }, ref) => {
-  const editorState = useEditorStore((s) => s.state)
+  const editorState = useEditorState()
+
   return (
     <div className='flex-1'>
       {editorState === 'error' ? (

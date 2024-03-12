@@ -1,12 +1,8 @@
 import { transplieCode } from '../utils/transpile'
-import { useEditorStore } from '../store'
+import { useEditorActions } from '../store'
 import MonacoEditor from '@monaco-editor/react'
 import { useDebounce } from '@toss/react'
 import { forwardRef } from 'react'
-
-interface Props {
-  iframeRef: React.RefObject<HTMLIFrameElement>
-}
 
 const editorCode = /* html */ `
 import React, { useEffect } from 'https://cdn.skypack.dev/react'
@@ -24,7 +20,6 @@ function App() {
         You can use NPM packages provided by {''}
         <a href="https://www.skypack.dev/">Skypack</a>.
       </p>
-      <img src="/image.gif" />
     </div>
   )
 }
@@ -34,8 +29,12 @@ render(
   document.getElementById('app')
 )`.trim()
 
+interface Props {
+  iframeRef: React.RefObject<HTMLIFrameElement>
+}
+
 const Editor = forwardRef<HTMLDivElement, Props>(({ iframeRef }, ref) => {
-  const { updateSourceCode, updateEditorState } = useEditorStore((store) => store.actions)
+  const { updateSourceCode, updateEditorState } = useEditorActions()
 
   const handleEditorChange = (value: string | undefined) => {
     updateEditorState('editing')
@@ -44,7 +43,7 @@ const Editor = forwardRef<HTMLDivElement, Props>(({ iframeRef }, ref) => {
       const { iframeCode, sourceCode } = transplieCode(value)
 
       updateSourceCode(sourceCode)
-      const payload = { type: 'javascript', value: iframeCode }
+      const payload = { value: iframeCode }
       iframeRef.current.contentWindow?.postMessage(payload, '*')
     }
   }
