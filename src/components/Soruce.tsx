@@ -1,4 +1,4 @@
-import { useEditorStore } from '../store'
+import { useEditorStore } from '../store/editor'
 import Badge from './ui/Badge'
 
 const Soruce = () => {

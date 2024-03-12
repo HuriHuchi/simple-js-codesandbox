@@ -1,9 +1,8 @@
 import { forwardRef } from 'react'
-import { useEditorState } from '../store'
+import { useEditorActions, useEditorState } from '../store/editor'
 import Badge from './ui/Badge'
 
-function updateIframe() {
-  return /*html*/ `
+const iframeSrc = /*html*/ `
   <html>
     <head>
       <link rel="stylesheet" href="/iframe.css">
@@ -22,7 +21,6 @@ function updateIframe() {
     </body>
   </html>
   `
-}
 
 interface Props {
   errorMessage: string
@@ -30,6 +28,7 @@ interface Props {
 
 const Output = forwardRef<HTMLIFrameElement, Props>(({ errorMessage }, ref) => {
   const editorState = useEditorState()
+  const { onIframeLoad } = useEditorActions()
 
   return (
     <div className='flex-1'>
@@ -39,7 +38,11 @@ const Output = forwardRef<HTMLIFrameElement, Props>(({ errorMessage }, ref) => {
           <pre className='text-red-500'>{errorMessage}</pre>
         </div>
       ) : (
-        <iframe ref={ref} className='w-full h-full' srcDoc={updateIframe()}></iframe>
+        <iframe
+          onLoad={onIframeLoad}
+          ref={ref}
+          className='w-full h-full'
+          srcDoc={iframeSrc}></iframe>
       )}
     </div>
   )
