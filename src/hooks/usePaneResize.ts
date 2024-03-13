@@ -12,16 +12,13 @@ export const usePaneResize = <El extends HTMLElement>({
   const activateResizeMode = () => setResizeMode(true)
 
   useEffect(() => {
-    const handleResize = (e) => {
+    const handleResize = (e: MouseEvent) => {
       if (elementRef?.current) {
         elementRef.current.style.width = `${e.clientX}px`
       }
     }
 
-    const handleMouseUp = () => {
-      console.log('mouse up')
-      setResizeMode(false)
-    }
+    const handleMouseUp = () => setResizeMode(false)
 
     if (resizeMode) {
       document.addEventListener('mousemove', handleResize)
